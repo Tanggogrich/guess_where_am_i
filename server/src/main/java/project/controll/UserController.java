@@ -1,7 +1,7 @@
-package project.server.controll;
+package project.controll;
 
-import project.server.model.User;
-import project.server.repository.UserRepository;
+import project.model.User;
+import project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +16,19 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable ("id") long id) {
+    @GetMapping("/user/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable ("id") String id) {
         return userRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PostMapping("/users")
+    @PostMapping("/user")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         if (userRepository.existsById(user.getId())) {
             return ResponseEntity.badRequest().build();
@@ -36,13 +36,13 @@ public class UserController {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/users")
+    @PutMapping("/user")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         if (!userRepository.existsById(user.getId())) {
             return ResponseEntity.badRequest().build();
@@ -50,7 +50,7 @@ public class UserController {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    @GetMapping("/users/{username}")
+    @GetMapping("/user/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         return userRepository
                 .findByUsername(username)
